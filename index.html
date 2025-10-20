@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Well Builder Clicker - Prototype</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>           
+            <img src="image.png" alt="Charity Water Logo" style="max-width: 180px; display: block; margin: 0 auto 16px auto;">
+            <h1>Well Builder</h1>
+            <p>Dig wells. Change lives. One click at a time.</p>
+        </header>
+
+        <div class="game-layout">
+            <div>
+                <div class="game-area">
+                    <h2>Current Well Progress</h2>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    
+                    <p id="progressText">0 / 1000 digs</p>
+                    
+                    <button id="digButton">💪 DIG!</button>
+                    
+                    <p id="clickPower">+1 dig per click</p>
+                </div>
+
+                <div class="stats">
+                    <h3>Your Impact</h3>
+                    <div class="stat-item">
+                        <span>💎 Dig Points</span>
+                        <span id="digPoints">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>⚡ Digs per Second</span>
+                        <span id="digsPerSecond">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🏆 Wells Completed</span>
+                        <span id="wellsCompleted">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>👥 People Helped</span>
+                        <span id="peopleHelped">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upgrades-panel">
+                <h3>⬆️ Upgrades</h3>
+                <div id="upgradesContainer"></div>
+            </div>
+        </div>
+
+
+        <div class="wells-completed">
+            <h2>🌍 Wells You've Built</h2>
+            <div class="well-grid" id="wellsGrid"></div>
+        </div>
+
+        <div id="celebration" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000; justify-content:center; align-items:center; background:rgba(255,255,255,0.85); flex-direction:column;">
+            <div id="celebration-message" style="font-size:2.5rem; color:#28a745; margin-bottom:2rem; text-align:center;"></div>
+            <div id="confetti"></div>
+            <button onclick="document.getElementById('celebration').style.display='none'" style="margin-top:2rem; padding:1rem 2rem; font-size:1.2rem; border:none; border-radius:8px; background:#4A90E2; color:white; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <button id="resetButton" style="margin: 24px auto 0 auto; display: block; background: #dc3545; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">Reset Game</button>
+    <script src="script.js"></script>
+</body>
+</html>

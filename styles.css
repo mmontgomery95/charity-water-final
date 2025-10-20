@@ -1,0 +1,314 @@
+.well-complete-animate {
+    animation: pop-well 0.7s cubic-bezier(.36,1.56,.64,1) 1;
+}
+
+@keyframes pop-well {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 #FFF7E1; }
+    60% { transform: scale(1.25); box-shadow: 0 0 30px 10px #FFF7E1; }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 #FFF7E1; }
+}
+
+#celebration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(255,255,255,0.85);
+}
+
+#confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1001;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #036;
+    padding: 20px;
+}
+body {
+    font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
+    background: #036;
+    color: #1a1a1a;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+header {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+header {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #1a1a1a;
+    border: 2px solid #ffc907;
+}
+header h1, header h2, header h3, header h4, header h5, header h6 {
+    font-family: Georgia, serif;
+    color: #1a1a1a;
+    font-weight: 100;
+}
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.game-area {
+    background: #cbccd1;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+}
+.game-area {
+    background: #cbccd1;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #ffc907;
+}
+
+.stats {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.stats {
+    background: #cbccd1;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 2px solid #ffc907;
+}
+
+.stat-item {
+    padding: 15px;
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+.stat-item {
+    padding: 15px;
+    background: #fff7e1;
+    color: #003366;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #77abbb;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+#digButton {
+    background: #036;
+    color: #ffc907;
+    border: none;
+    padding: 20px 40px;
+    font-size: 18px;
+    border-radius: 8px;
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #77a8bb;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 20px 0;
+    border: 2px solid #003366;
+}
+.progress-fill {
+    height: 100%;
+    background: #ffc907;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+    cursor: pointer;
+    margin: 20px 0;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
+}
+#digButton:hover {
+    background: #003366;
+    color: #ffc907;
+}
+#digButton:active {
+    transform: scale(0.95);
+}
+
+.upgrades-panel {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+}
+.upgrades-panel {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #ffc907;
+}
+
+.upgrade-item {
+    background: #fff7e1;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+.upgrade-item {
+    background: #fff7e1;
+    color: #003366;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-family: Georgia, serif;
+    color: #003366;
+}
+
+.upgrade-button {
+    width: 100%;
+    background: #28a745;
+.upgrade-button {
+    width: 100%;
+    background: #ffc907;
+    color: #003366;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
+}
+.upgrade-button:hover {
+    background: #003366;
+    color: #ffc907;
+}
+.upgrade-button:disabled {
+    background: #bf6c46;
+    color: #fff7e1;
+    cursor: not-allowed;
+}
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upgrade-button:hover {
+    background: #218838;
+}
+
+.upgrade-button:disabled {
+    background: #bf6c46;
+    cursor: not-allowed;
+}
+
+.wells-completed {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    grid-column: 1 / -1;
+}
+.wells-completed {
+    background: #cbccd1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    grid-column: 1 / -1;
+    border: 2px solid #ffc907;
+}
+
+.well-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.well-card {
+    background: #4A90E2;
+    color: white;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+}
+.well-card {
+    background: #fff7e1;
+    color: #1a1a1a;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: Georgia, serif;
+}
+/* Charity: water brand font fallback */
+h1, h2, h3, h4, h5, h6 {
+    font-family: Georgia, serif;
+    color: #1a1a1a;
+}
+
+p, span, li, td, th, label, input, button, div, a {
+    font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+}
