@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <div id="coin-emoji-popup" style="position:fixed; display:none; font-size:2.5rem; z-index:2000; cursor:pointer; transition:transform 0.3s;"></div>
         <header>           
             <img src="image.png" alt="Charity Water Logo" style="max-width: 180px; display: block; margin: 0 auto 16px auto;">
             <h1>Well Builder</h1>
@@ -18,15 +19,15 @@
             <div>
                 <div class="game-area">
                     <h2>Current Well Progress</h2>
-                    
+                    <div class="well-visualization" style="position:relative; width:220px; height:220px; margin:0 auto 20px auto;">
+                        <img src="images/well.svg" id="wellSvg" style="position:absolute; left:0; top:0; width:220px; height:220px; opacity:0.3; z-index:1; transition:opacity 0.5s;" alt="Well progress">
+                        <div id="water-emoji-container" style="position:absolute; pointer-events:none; left:0; top:0; width:220px; height:220px; z-index:10;"></div>
+                    </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressBar"></div>
                     </div>
-                    
                     <p id="progressText">0 / 1000 digs</p>
-                    
-                    <button id="digButton">💪 DIG!</button>
-                    
+                    <button id="digButton">💧 DIG!</button>
                     <p id="clickPower">+1 dig per click</p>
                 </div>
 
@@ -53,7 +54,7 @@
 
             <div class="upgrades-panel">
                 <h3>⬆️ Upgrades</h3>
-                <div id="upgradesContainer"></div>
+                <div id="upgradesContainer" style="height: 780px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -63,14 +64,12 @@
             <div class="well-grid" id="wellsGrid"></div>
         </div>
 
-        <div id="celebration" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000; justify-content:center; align-items:center; background:rgba(255,255,255,0.85); flex-direction:column;">
-            <div id="celebration-message" style="font-size:2.5rem; color:#28a745; margin-bottom:2rem; text-align:center;"></div>
-            <div id="confetti"></div>
-            <button onclick="document.getElementById('celebration').style.display='none'" style="margin-top:2rem; padding:1rem 2rem; font-size:1.2rem; border:none; border-radius:8px; background:#4A90E2; color:white; cursor:pointer;">Close</button>
-        </div>
+        <div id="water-emoji-container" style="position:absolute; pointer-events:none; left:0; top:0; width:220px; height:220px; z-index:10;"></div>
     </div>
 
-    <button id="resetButton" style="margin: 24px auto 0 auto; display: block; background: #dc3545; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">Reset Game</button>
+    <button id="resetButton" style="margin: 24px auto 0 auto; display: block; background: #bf6c46; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">Reset Game</button>
+    <audio id="waterdropSound" src="sounds/waterdrop.mp3" preload="auto"></audio>
+    <audio id="coinSound" src="sounds/coin.mp3" preload="auto"></audio>
     <script src="script.js"></script>
 </body>
 </html>

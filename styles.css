@@ -1,3 +1,19 @@
+/* Well visualization layered images */
+.well-visualization {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 20px auto;
+}
+.well-visualization img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    padding-top: 20px;
+}
 .well-complete-animate {
     animation: pop-well 0.7s cubic-bezier(.36,1.56,.64,1) 1;
 }
@@ -38,13 +54,8 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #036;
-    padding: 20px;
-}
-body {
     font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
-    background: #036;
+    background: #fff7e1;
     color: #1a1a1a;
     padding: 20px;
 }
@@ -55,20 +66,13 @@ body {
 }
 
 header {
-    background: #cbccd1;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-header {
-    background: #cbccd1;
+    background: #fff;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
     text-align: center;
     color: #1a1a1a;
-    border: 2px solid #ffc907;
+    border: 2px solid #2e9df7;
 }
 header h1, header h2, header h3, header h4, header h5, header h6 {
     font-family: Georgia, serif;
@@ -83,44 +87,25 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
 }
 
 .game-area {
-    background: #cbccd1;
+    background: #fff;
     padding: 30px;
     border-radius: 8px;
     text-align: center;
-}
-.game-area {
-    background: #cbccd1;
-    padding: 30px;
-    border-radius: 8px;
-    text-align: center;
-    border: 2px solid #ffc907;
+    border: 2px solid #2e9df7;
 }
 
 .stats {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-}
-.stats {
-    background: #cbccd1;
+    background: #ffffff;
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
-    border: 2px solid #ffc907;
+    border: 2px solid #2e9df7;
 }
 
 .stat-item {
     padding: 15px;
-    background: #f8f9fa;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-}
-.stat-item {
-    padding: 15px;
     background: #fff7e1;
-    color: #003366;
+    color: #222;
     margin-bottom: 10px;
     border-radius: 4px;
     display: flex;
@@ -130,41 +115,33 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
 .progress-bar {
     width: 100%;
     height: 30px;
-    background: #e9ecef;
+    background: #ffe9a0;
     border-radius: 15px;
     overflow: hidden;
     margin: 20px 0;
+    border: 2px solid #2e9df7;
 }
 
 .progress-fill {
     height: 100%;
-    background: #77abbb;
+    background: #77a8bb;
     width: 0%;
     transition: width 0.3s ease;
 }
 
 #digButton {
-    background: #036;
-    color: #ffc907;
+    background: #ffc907;
+    color: #222;
     border: none;
     padding: 20px 40px;
     font-size: 18px;
     border-radius: 8px;
-.progress-bar {
-    width: 100%;
-    height: 30px;
-    background: #77a8bb;
-    border-radius: 15px;
-    overflow: hidden;
+    cursor: pointer;
     margin: 20px 0;
-    border: 2px solid #003366;
-}
-.progress-fill {
-    height: 100%;
-    background: #ffc907;
-    width: 0%;
-    transition: width 0.3s ease;
-}
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
     cursor: pointer;
     margin: 20px 0;
     font-weight: bold;
@@ -173,59 +150,40 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
     font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
 }
 #digButton:hover {
-    background: #003366;
-    color: #ffc907;
+    background: #ffe9a0;
+    color: #222;
 }
 #digButton:active {
     transform: scale(0.95);
 }
 
 .upgrades-panel {
-    background: #cbccd1;
+    background: #fff;
     padding: 20px;
     border-radius: 8px;
-}
-.upgrades-panel {
-    background: #cbccd1;
-    padding: 20px;
-    border-radius: 8px;
-    border: 2px solid #ffc907;
+    border: 2px solid #2e9df7;
 }
 
 .upgrade-item {
-    background: #fff7e1;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-}
-.upgrade-item {
-    background: #fff7e1;
-    color: #003366;
+    background: #8bd1cb7c;
+    color: #fff;
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 4px;
 }
 
-.upgrade-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
 .upgrade-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
     font-family: Georgia, serif;
-    color: #003366;
+    color: #222;
 }
 
 .upgrade-button {
     width: 100%;
-    background: #28a745;
-.upgrade-button {
-    width: 100%;
     background: #ffc907;
-    color: #003366;
+    color: #222;
     border: none;
     padding: 8px;
     border-radius: 4px;
@@ -235,44 +193,27 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
     font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
 }
 .upgrade-button:hover {
-    background: #003366;
-    color: #ffc907;
-}
-.upgrade-button:disabled {
-    background: #bf6c46;
-    color: #fff7e1;
-    cursor: not-allowed;
-}
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
+    background: #ffe9a0;
+    color: #222;
 }
 
 .upgrade-button:hover {
-    background: #218838;
+    background: #159A48;
 }
 
 .upgrade-button:disabled {
-    background: #bf6c46;
+    background: #fed8c1;
     cursor: not-allowed;
+    color: #999;
 }
 
 .wells-completed {
-    background: #cbccd1;
+    background: #fff;
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
     grid-column: 1 / -1;
-}
-.wells-completed {
-    background: #cbccd1;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    grid-column: 1 / -1;
-    border: 2px solid #ffc907;
+    border: 2px solid #2e9df7;
 }
 
 .well-grid {
@@ -283,19 +224,29 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
 }
 
 .well-card {
-    background: #4A90E2;
-    color: white;
-    padding: 20px;
-    border-radius: 4px;
-    text-align: center;
-}
-.well-card {
-    background: #fff7e1;
-    color: #1a1a1a;
+    background: #fff;
+    color: #222;
     padding: 20px;
     border-radius: 4px;
     text-align: center;
     font-family: Georgia, serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 120px;
+}
+
+.well-card img {
+    display: block;
+    margin: 0 auto 0 auto;
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: transparent;
 }
 /* Charity: water brand font fallback */
 h1, h2, h3, h4, h5, h6 {
@@ -305,6 +256,16 @@ h1, h2, h3, h4, h5, h6 {
 
 p, span, li, td, th, label, input, button, div, a {
     font-family: 'Proxima Nova', 'Avenir', 'Segoe UI', Arial, sans-serif;
+}
+
+.button-click-animate {
+    animation: button-pop 0.18s cubic-bezier(.36,1.56,.64,1) 1;
+}
+
+@keyframes button-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1); }
 }
 
 @media (max-width: 768px) {

@@ -6,6 +6,7 @@ const gameState = {
     clickPower: 1,
     digsPerSecond: 0,
     wellCost: 1000,
+    difficulty: null, // 'easy', 'normal', 'hard'
     upgrades: [
         {
             id: 'shovel',
@@ -39,7 +40,42 @@ const gameState = {
     countries: ['Ethiopia', 'Uganda', 'India', 'Cambodia', 'Nepal', 'Tanzania', 'Rwanda', 'Malawi']
 };
 
+// Difficulty settings
+const difficultySettings = {
+    easy: {
+        wellCost: 500,
+        scaling: {
+            shovel: { base: 80, growth: 1.35 },
+            volunteer: { base: 180, growth: 1.45 },
+            drill: { base: 350, growth: 1.55 },
+            grant: { base: 700, growth: 1.65 }
+        },
+        wellGrowth: 1.7
+    },
+    normal: {
+        wellCost: 1000,
+        scaling: {
+            shovel: { base: 100, growth: 1.55 },
+            volunteer: { base: 250, growth: 1.65 },
+            drill: { base: 500, growth: 1.75 },
+            grant: { base: 1000, growth: 1.85 }
+        },
+        wellGrowth: 2.2
+    },
+    hard: {
+        wellCost: 2000,
+        scaling: {
+            shovel: { base: 120, growth: 1.75 },
+            volunteer: { base: 350, growth: 1.85 },
+            drill: { base: 700, growth: 2.0 },
+            grant: { base: 1400, growth: 2.15 }
+        },
+        wellGrowth: 2.7
+    }
+};
+
 // DOM Elements
+const coinPopup = document.getElementById('coin-emoji-popup');
 const digButton = document.getElementById('digButton');
 const digPointsEl = document.getElementById('digPoints');
 const progressBar = document.getElementById('progressBar');
@@ -62,21 +98,65 @@ if (resetButton) {
             gameState.wellsCompleted = 0;
             gameState.clickPower = 1;
             gameState.digsPerSecond = 0;
+            gameState.difficulty = null;
+            // Set wellCost and upgrades to default (difficulty will set after prompt)
             gameState.wellCost = 1000;
             gameState.upgrades.forEach(upg => {
                 upg.owned = 0;
-                if (upg.id === 'shovel') upg.cost = 100;
-                if (upg.id === 'volunteer') upg.cost = 250;
-                if (upg.id === 'drill') upg.cost = 500;
-                if (upg.id === 'grant') upg.cost = 1000;
+                upg.cost = 100;
             });
-            // Remove all wells from grid
             wellsGrid.innerHTML = '';
             recalcUpgrades();
             updateDisplay();
             renderUpgrades();
+            showDifficultyPrompt();
         }
     });
+}
+
+// Show difficulty selection modal
+function showDifficultyPrompt() {
+    // Always show prompt if difficulty is not set or is null/undefined
+    if (gameState.difficulty === 'easy' || gameState.difficulty === 'normal' || gameState.difficulty === 'hard') return;
+    const modal = document.createElement('div');
+    modal.id = 'difficulty-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0'; modal.style.left = '0';
+    modal.style.width = '100vw'; modal.style.height = '100vh';
+    modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center';
+    modal.style.zIndex = '9999';
+    modal.innerHTML = `
+        <div style="background: #fff; padding: 32px 40px; border-radius: 12px; text-align: center; box-shadow: 0 2px 24px #0002;">
+            <h2>Choose Difficulty</h2>
+            <p style="margin-bottom: 18px;">How challenging do you want your well-building journey to be?</p>
+            <button id="easyBtn" style="margin: 8px; padding: 10px 24px; font-size: 16px;">Easy</button>
+            <button id="normalBtn" style="margin: 8px; padding: 10px 24px; font-size: 16px;">Normal</button>
+            <button id="hardBtn" style="margin: 8px; padding: 10px 24px; font-size: 16px;">Hard</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('easyBtn').onclick = () => selectDifficulty('easy');
+    document.getElementById('normalBtn').onclick = () => selectDifficulty('normal');
+    document.getElementById('hardBtn').onclick = () => selectDifficulty('hard');
+}
+
+function selectDifficulty(diff) {
+    gameState.difficulty = diff;
+    // Set initial well cost and upgrades
+    const settings = difficultySettings[diff];
+    gameState.wellCost = settings.wellCost;
+    gameState.upgrades.forEach(upg => {
+        upg.owned = 0;
+        if (settings.scaling[upg.id]) {
+            upg.cost = settings.scaling[upg.id].base;
+        }
+    });
+    document.getElementById('difficulty-modal').remove();
+    recalcUpgrades();
+    updateDisplay();
+    renderUpgrades();
+    // Save difficulty
+    localStorage.setItem('wellBuilderSave', JSON.stringify(gameState));
 }
 
 // Dig Button Click
@@ -100,7 +180,21 @@ function addDigs(amount) {
 function completeWell() {
     gameState.wellsCompleted++;
     gameState.currentWellProgress = 0;
-    gameState.wellCost = Math.floor(gameState.wellCost * 2.2); // Increase difficulty more greatly
+    // Add a special auto-dig upgrade for this well if not already added
+    if (!gameState.upgrades.some(upg => upg.id === `auto${gameState.wellsCompleted}`)) {
+        const country = gameState.countries[(gameState.wellsCompleted - 1) % gameState.countries.length];
+        gameState.upgrades.push({
+            id: `auto${gameState.wellsCompleted}`,
+            name: `🤝 Helpers from ${country}`,
+            cost: 0,
+            owned: 0,
+            effect: 'auto-dig',
+            available: true
+        });
+    }
+    // Difficulty-based well cost scaling
+    const diff = gameState.difficulty || 'normal';
+    gameState.wellCost = Math.floor(gameState.wellCost * difficultySettings[diff].wellGrowth);
 
     // Add well to grid
     const countryIndex = (gameState.wellsCompleted - 1) % gameState.countries.length;
@@ -108,7 +202,8 @@ function completeWell() {
     const wellCard = document.createElement('div');
     wellCard.className = 'well-card well-complete-animate';
     wellCard.innerHTML = `
-        <h3>${country}</h3>
+        <img src="images/jerry-can.png" alt="Jerry Can" style="width:80px; height:80px; margin-top:8px; margin-bottom:24px; display:block; margin-left:auto; margin-right:auto;" />
+        <h3 style='margin-top:0;'>${country}</h3>
         <p>500 people served</p>
     `;
     wellsGrid.appendChild(wellCard);
@@ -119,61 +214,46 @@ function completeWell() {
 
     // Check for all wells completed (arbitrary: 8 countries = 8 wells)
     if (gameState.wellsCompleted >= gameState.countries.length) {
-        showCelebration('Congratulations! You have built a well in every country! 🌍🎉');
+        // Optionally show a final message or animation
     } else {
-        // Small celebration for each well
-        showWellCelebration();
+        animateWaterEmojis();
     }
 }
 
-function showWellCelebration() {
-    const celebration = document.getElementById('celebration');
-    const message = document.getElementById('celebration-message');
-    if (celebration && message) {
-        message.textContent = 'Well Completed! 💧';
-        celebration.style.display = 'flex';
-        launchConfetti();
+
+// Animate water emojis around the well visualization
+function animateWaterEmojis() {
+    const container = document.getElementById('water-emoji-container');
+    if (!container) return;
+    container.innerHTML = '';
+    const emoji = '💧';
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.textContent = emoji;
+        span.style.position = 'absolute';
+        const angle = (2 * Math.PI * i) / count;
+        const radius = 80;
+        const x = 110 + Math.cos(angle) * radius;
+        const y = 110 + Math.sin(angle) * radius;
+        span.style.left = `${x - 16}px`;
+        span.style.top = `${y - 16}px`;
+        span.style.fontSize = '2rem';
+        span.style.opacity = '0';
+        span.style.transition = 'opacity 0.3s, transform 1s';
+        container.appendChild(span);
         setTimeout(() => {
-            celebration.style.display = 'none';
-        }, 1800);
-    }
-}
-
-function showCelebration(msg) {
-    const celebration = document.getElementById('celebration');
-    const message = document.getElementById('celebration-message');
-    if (celebration && message) {
-        message.textContent = msg;
-        celebration.style.display = 'flex';
-        launchConfetti();
-    }
-}
-
-function launchConfetti() {
-    const confetti = document.getElementById('confetti');
-    if (!confetti) return;
-    confetti.innerHTML = '';
-    const colors = ['#4A90E2', '#28a745', '#FFD700', '#FF69B4', '#FF6347'];
-    for (let i = 0; i < 80; i++) {
-        const div = document.createElement('div');
-        div.style.position = 'absolute';
-        div.style.width = '12px';
-        div.style.height = '12px';
-        div.style.borderRadius = '50%';
-        div.style.background = colors[Math.floor(Math.random()*colors.length)];
-        div.style.left = Math.random()*100 + 'vw';
-        div.style.top = '-20px';
-        div.style.opacity = 0.8;
-        div.style.transform = `scale(${0.7 + Math.random()*0.6})`;
-        div.style.transition = 'top 1.5s cubic-bezier(.36,1.56,.64,1), left 1.5s linear, opacity 1.5s linear';
-        confetti.appendChild(div);
+            span.style.opacity = '1';
+            span.style.transform = 'scale(1.3)';
+        }, 50 + i * 60);
         setTimeout(() => {
-            div.style.top = 80 + 20*Math.random() + 'vh';
-            div.style.left = (parseFloat(div.style.left) + (Math.random()-0.5)*200) + 'px';
-            div.style.opacity = 0;
-        }, 10);
+            span.style.opacity = '0';
+            span.style.transform = 'scale(0.7)';
+        }, 1200 + i * 30);
     }
-    setTimeout(() => { confetti.innerHTML = ''; }, 1800);
+    setTimeout(() => {
+        container.innerHTML = '';
+    }, 1800);
 }
 
 // Buy Upgrade
@@ -182,14 +262,10 @@ function buyUpgrade(upgradeIndex) {
     if (gameState.digPoints >= upgrade.cost) {
         gameState.digPoints -= upgrade.cost;
         upgrade.owned++;
-        // Exponential price scaling
-    let baseCost = 100;
-    let growth = 1.55;
-    if (upgrade.id === 'shovel') { baseCost = 100; growth = 1.55; }
-    if (upgrade.id === 'volunteer') { baseCost = 250; growth = 1.65; }
-    if (upgrade.id === 'drill') { baseCost = 500; growth = 1.75; }
-    if (upgrade.id === 'grant') { baseCost = 1000; growth = 1.85; }
-    upgrade.cost = Math.round(baseCost * Math.pow(growth, upgrade.owned));
+        // Difficulty-based price scaling
+        const diff = gameState.difficulty || 'normal';
+        const scale = difficultySettings[diff].scaling[upgrade.id];
+        upgrade.cost = Math.round(scale.base * Math.pow(scale.growth, upgrade.owned));
         recalcUpgrades();
         updateDisplay();
         renderUpgrades();
@@ -204,7 +280,6 @@ function recalcUpgrades() {
     gameState.upgrades.forEach(upg => {
         if (upg.owned >= 0) {
             if (upg.id === 'shovel') {
-                // +1, +2, +3, ...
                 for (let i = 1; i <= upg.owned; i++) gameState.clickPower += i;
             }
             if (upg.id === 'volunteer') {
@@ -216,6 +291,10 @@ function recalcUpgrades() {
             if (upg.id === 'grant') {
                 for (let i = 1; i <= upg.owned; i++) gameState.clickPower += i * 10;
             }
+            // Auto-dig upgrade: +5 dig/sec per well completed
+            if (upg.effect === 'auto-dig' && upg.owned > 0) {
+                gameState.digsPerSecond += 5;
+            }
         }
     });
 }
@@ -224,6 +303,8 @@ function recalcUpgrades() {
 function renderUpgrades() {
     upgradesContainer.innerHTML = '';
     gameState.upgrades.forEach((upgrade, index) => {
+        // Only show auto-dig upgrade if not owned yet
+        if (upgrade.effect === 'auto-dig' && upgrade.owned > 0) return;
         const canAfford = gameState.digPoints >= upgrade.cost;
         const nextOwned = upgrade.owned + 1;
         let nextEffect = '';
@@ -235,13 +316,15 @@ function renderUpgrades() {
             nextEffect = `Next: +${nextOwned * 5} dig per second`;
         } else if (upgrade.id === 'grant') {
             nextEffect = `Next: +${nextOwned * 10} dig per click`;
+        } else if (upgrade.effect === 'auto-dig') {
+            nextEffect = `+5 dig per second (one-time)`;
         }
         const upgradeDiv = document.createElement('div');
         upgradeDiv.className = 'upgrade-item';
         upgradeDiv.innerHTML = `
             <div class="upgrade-header">
                 <span><strong>${upgrade.name}</strong></span>
-                <span style="background: #28a745; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${upgrade.cost} pts</span>
+                <span style="background: #2e9df7; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${upgrade.cost} pts</span>
             </div>
             <p style="font-size: 12px; color: #007bff; margin-bottom: 8px;">${nextEffect}</p>
             <p style="font-size: 11px; color: #999; margin-bottom: 8px;">Owned: ${upgrade.owned}</p>
@@ -263,11 +346,17 @@ function updateDisplay() {
     peopleHelpedEl.textContent = (gameState.wellsCompleted * 500).toLocaleString();
     digsPerSecondEl.textContent = gameState.digsPerSecond;
     clickPowerEl.textContent = `+${gameState.clickPower} dig per click`;
-    
     // Update progress bar
     const progressPercent = (gameState.currentWellProgress / gameState.wellCost) * 100;
     progressBar.style.width = progressPercent + '%';
     progressText.textContent = `${Math.floor(gameState.currentWellProgress)} / ${gameState.wellCost} digs`;
+
+    // Well.svg progress logic
+    const wellSvg = document.getElementById('wellSvg');
+    if (wellSvg) {
+        // Opacity from 0.0 (start) to 0.7 (complete)
+        wellSvg.style.opacity = 0.0 + 0.7 * (progressPercent / 100);
+    }
 }
 
 // Auto-digging (passive income)
@@ -291,6 +380,11 @@ function loadGame() {
     if (saved) {
         const savedState = JSON.parse(saved);
         Object.assign(gameState, savedState);
+        // If difficulty not set, prompt
+        if (!gameState.difficulty) {
+            showDifficultyPrompt();
+            return;
+        }
         recalcUpgrades();
         // Rebuild wells grid
         for (let i = 0; i < gameState.wellsCompleted; i++) {
@@ -299,15 +393,79 @@ function loadGame() {
             const wellCard = document.createElement('div');
             wellCard.className = 'well-card';
             wellCard.innerHTML = `
-                <h3>${country}</h3>
+                <img src="images/jerry-can.png" alt="Jerry Can" style="width:80px; height:80px; margin-top:8px; margin-bottom:36px; display:block; margin-left:auto; margin-right:auto;" />
+                <h3 style='margin-top:0;'>${country}</h3>
                 <p>500 people served</p>
             `;
             wellsGrid.appendChild(wellCard);
         }
+    } else {
+        showDifficultyPrompt();
     }
 }
 
 // Initialize game
+// Coin popup logic
+function showCoinPopup() {
+    if (!coinPopup) return;
+    if (coinPopup.style.display === 'block') return; // Only one at a time
+    // Random position (avoid edges)
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const x = Math.random() * (vw - 80) + 40;
+    const y = Math.random() * (vh - 180) + 80;
+    coinPopup.style.left = `${x}px`;
+    coinPopup.style.top = `${y}px`;
+    coinPopup.textContent = '🪙';
+    coinPopup.style.display = 'block';
+    coinPopup.style.transform = 'scale(1)';
+    setTimeout(() => {
+        coinPopup.style.transform = 'scale(1.2)';
+    }, 80);
+    // Hide after 7 seconds if not clicked
+    setTimeout(() => {
+        coinPopup.style.display = 'none';
+    }, 7000);
+}
+
+coinPopup.onclick = function() {
+    coinPopup.style.display = 'none';
+    // Award dig points based on progress and difficulty
+    let base = Math.max(10, Math.floor(gameState.currentWellProgress / 10));
+    let diff = gameState.difficulty || 'normal';
+    let multiplier = (diff === 'easy') ? 1 : (diff === 'normal') ? 2 : 3;
+    let award = base * multiplier;
+    gameState.digPoints += award;
+    updateDisplay();
+    // Optionally show a quick floating text
+    const float = document.createElement('div');
+    float.textContent = `+${award} digs!`;
+    float.style.position = 'fixed';
+    float.style.left = coinPopup.style.left;
+    float.style.top = coinPopup.style.top;
+    float.style.fontSize = '1.5rem';
+    float.style.color = '#ffc907';
+    float.style.zIndex = '2100';
+    float.style.pointerEvents = 'none';
+    float.style.transition = 'opacity 1s, transform 1s';
+    float.style.opacity = '1';
+    float.style.transform = 'translateY(-20px)';
+    document.body.appendChild(float);
+    setTimeout(() => {
+        float.style.opacity = '0';
+        float.style.transform = 'translateY(-60px)';
+    }, 100);
+    setTimeout(() => {
+        document.body.removeChild(float);
+    }, 1200);
+}
+
+// Randomly show coin popup every 20-40 seconds
+setInterval(() => {
+    if (Math.random() < 0.04) { // ~1 in 25 chance per second
+        showCoinPopup();
+    }
+}, 1000);
 loadGame();
 recalcUpgrades();
 renderUpgrades();
