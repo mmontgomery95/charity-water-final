@@ -7,10 +7,62 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="audio-controls" style="position:fixed; top:16px; left:16px; z-index:3000; display:flex; gap:8px;">
+    </div>
+    <div style="position:fixed; top:8px; left:16px; z-index:3000;">
+    <button id="menuButton" class="menu-btn">☰ Menu</button>
+    </div>
+    <!-- Menu Modal -->
+    <div id="menuModal" class="modal-bg">
+        <div class="modal-content">
+            <h2>Menu</h2>
+            <div class="modal-mute-row">
+                <button id="modalToggleMusic" class="modal-mute-btn">🔊 Music</button>
+                <button id="modalToggleSound" class="modal-mute-btn">🔊 Sound</button>
+            </div>
+            <button id="howToPlayBtn" class="modal-action-btn">How to Play</button>
+            <button id="modalResetButton" class="modal-reset-btn">Reset Game</button>
+            <a href="https://www.charitywater.org/" target="_blank" class="modal-link home-img-btn"><img src="images/cw-support.jpg" alt="charity: water" /></a>
+            <a href="https://www.charitywater.org/donate/" target="_blank" class="modal-link donate">Donate <img src="images/waterdrop.svg" alt="Water Drop"></a>
+            <button id="closeMenuModal" class="modal-close-btn">Close</button>
+        </div>
+    </div>
+    <!-- How to Play Modal -->
+    <div id="howToPlayModal" class="modal-bg">
+        <div class="modal-content">
+            <h2>How to Play</h2>
+            <ul class="modal-list">
+                <li>Click the <b>DIG!</b> button to dig for well progress.</li>
+                <li>Earn dig points and use them to buy upgrades for faster digging.</li>
+                <li>Complete wells in different countries to help more people.</li>
+                <li>Finish all wells to win the game!</li>
+                <li>Use the mute buttons to control music and sound.</li>
+                <li>Reset your progress anytime with the reset button.</li>
+            </ul>
+            <button id="closeHowToPlay" style="background:#2e9df7; color:#fff; border:none; border-radius:6px; padding:8px 22px; font-size:15px; cursor:pointer; position:absolute; right:18px; bottom:18px;">Close</button>
+        </div>
+    </div>
+    <!-- How to Play Modal -->
+    <div id="howToPlayModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.45); z-index:4000; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:32px 28px; border-radius:12px; max-width:400px; margin:auto; box-shadow:0 2px 24px #0002; text-align:left; position:relative;">
+            <h2 style="margin-top:0;">How to Play</h2>
+            <ul style="margin-bottom:18px; padding-left:18px;">
+                <li>Click the <b>DIG!</b> button to dig for well progress.</li>
+                <li>Earn dig points and use them to buy upgrades for faster digging.</li>
+                <li>Click on coins as they appear to collect them.</li>
+                <li>Complete wells in different countries to help more people.</li>
+                <li>Finish all wells to win the game!</li>
+                <li>Use the mute buttons to control music and sound.</li>
+                <li>Reset your progress anytime with the reset button.</li>
+            </ul>
+            <button id="closeHowToPlay" class="modal-close-btn">Close</button>
+        </div>
+    </div>
+    </div>
     <div class="container">
         <div id="coin-emoji-popup" style="position:fixed; display:none; font-size:2.5rem; z-index:2000; cursor:pointer; transition:transform 0.3s;"></div>
         <header>           
-            <img src="image.png" alt="Charity Water Logo" style="max-width: 180px; display: block; margin: 0 auto 16px auto;">
+            <img src="images/logo.png" alt="Charity Water Logo" style="max-width: 250px; display: block; margin: 0 auto 16px auto;">
             <h1>Well Builder</h1>
             <p>Dig wells. Change lives. One click at a time.</p>
         </header>
@@ -67,9 +119,97 @@
         <div id="water-emoji-container" style="position:absolute; pointer-events:none; left:0; top:0; width:220px; height:220px; z-index:10;"></div>
     </div>
 
-    <button id="resetButton" style="margin: 24px auto 0 auto; display: block; background: #bf6c46; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">Reset Game</button>
-    <audio id="waterdropSound" src="sounds/waterdrop.mp3" preload="auto"></audio>
+    <!-- <button id="resetButton" style="margin: 24px auto 0 auto; display: block; background: #bf6c46; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer;">Reset Game</button> -->
+    <audio id="waterdropSound" src="sounds/cute-level-up-3-189853.mp3" preload="auto"></audio>
     <audio id="coinSound" src="sounds/coin.mp3" preload="auto"></audio>
-    <script src="script.js"></script>
+    <audio id="bg-music" src="sounds/lofi-relax-bg.mp3" loop hidden></audio>
+    <script type="module" src="script.js"></script>
+    <script>
+        // Menu modal logic
+        document.getElementById('menuButton').onclick = function() {
+            document.getElementById('menuModal').style.display = 'flex';
+        };
+        document.getElementById('closeMenuModal').onclick = function() {
+            document.getElementById('menuModal').style.display = 'none';
+        };
+        // How to play modal logic
+        document.getElementById('howToPlayBtn').onclick = function() {
+            document.getElementById('howToPlayModal').style.display = 'flex';
+        };
+        document.getElementById('closeHowToPlay').onclick = function() {
+            document.getElementById('howToPlayModal').style.display = 'none';
+        };
+        // Mute toggles in menu
+        document.getElementById('modalToggleMusic').onclick = function() {
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.muted = !bgMusic.muted;
+            this.textContent = bgMusic.muted ? '🔇 Music' : '🔊 Music';
+        };
+        document.getElementById('modalToggleSound').onclick = function() {
+            const soundEls = [
+                document.getElementById('waterdropSound'),
+                document.getElementById('coinSound')
+            ];
+            const muted = !(soundEls[0]?.muted);
+            soundEls.forEach(el => { if (el) el.muted = muted; });
+            this.textContent = muted ? '🔇 Sound' : '🔊 Sound';
+        };
+        // Reset button in menu
+        document.getElementById('modalResetButton').onclick = function() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                localStorage.removeItem('wellBuilderSave');
+                location.reload();
+            }
+        };
+    </script>
+    <script>
+        // Play background music after user interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.muted = false;
+            bgMusic.volume = 0.5;
+            function startMusic() {
+                if (bgMusic.paused) {
+                    bgMusic.play().catch(() => {});
+                }
+                document.removeEventListener('click', startMusic);
+                document.removeEventListener('keydown', startMusic);
+                document.removeEventListener('touchstart', startMusic);
+            }
+            document.addEventListener('click', startMusic);
+            document.addEventListener('keydown', startMusic);
+            document.addEventListener('touchstart', startMusic);
+
+            // Mute/unmute controls
+            const toggleMusic = document.getElementById('toggleMusic');
+            const toggleSound = document.getElementById('toggleSound');
+            const soundEls = [
+                document.getElementById('waterdropSound'),
+                document.getElementById('coinSound')
+            ];
+
+            // Restore mute state from localStorage
+            if (localStorage.getItem('musicMuted') === 'true') {
+                bgMusic.muted = true;
+                toggleMusic.textContent = '🔇 Music';
+            }
+            if (localStorage.getItem('soundMuted') === 'true') {
+                soundEls.forEach(el => { if (el) el.muted = true; });
+                toggleSound.textContent = '🔇 Sound';
+            }
+
+            toggleMusic.addEventListener('click', function() {
+                bgMusic.muted = !bgMusic.muted;
+                toggleMusic.textContent = bgMusic.muted ? '🔇 Music' : '🔊 Music';
+                localStorage.setItem('musicMuted', bgMusic.muted);
+            });
+            toggleSound.addEventListener('click', function() {
+                const muted = !(soundEls[0]?.muted);
+                soundEls.forEach(el => { if (el) el.muted = muted; });
+                toggleSound.textContent = muted ? '🔇 Sound' : '🔊 Sound';
+                localStorage.setItem('soundMuted', muted);
+            });
+        });
+    </script>
 </body>
 </html>
